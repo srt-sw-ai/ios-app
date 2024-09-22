@@ -30,27 +30,23 @@ struct ReportView: View {
             Spacer()
                 .frame(height: 100)
             
-            Button(
-                action: {
-                    
-                },
-                label:{
-                    ZStack{
-                        Circle()
-                            .frame(width: 170)
-                            .foregroundStyle(reportGradient())
-                        
-                        
-                            Circle()
-                                .frame(width: 210)
-                                .foregroundStyle(reportGradient().opacity(0.3))
-                        
-                        Image("ReportLogo")
-                            .resizable()
-                            .frame(width: 56,height: 64)
-                    }
+            NavigationLink{
+                SnapView()
+            }label:{
+                ZStack{
+                    Circle()
+                        .frame(width: 170)
+                        .foregroundStyle(reportGradient())
+                            
+                    Circle()
+                        .frame(width: 210)
+                        .foregroundStyle(reportGradient().opacity(0.3))
+                            
+                    Image("ReportLogo")
+                        .resizable()
+                        .frame(width: 56,height: 64)
                 }
-            )
+            }
             
             Spacer()
                 .frame(height: 40)
