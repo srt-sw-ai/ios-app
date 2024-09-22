@@ -34,7 +34,8 @@ struct LoginView: View {
                     .frame(height: 200)
                 
                 NavigationLink{
-                    
+                    ReportView()
+                        .navigationBarBackButtonHidden()
                 }label:{
                     CustomButton(label: "로그인")
                 }
