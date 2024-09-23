@@ -32,6 +32,7 @@ struct ReportView: View {
             
             NavigationLink{
                 SnapView()
+                    .navigationBarBackButtonHidden()
             }label:{
                 ZStack{
                     Circle()

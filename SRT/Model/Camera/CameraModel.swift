@@ -9,12 +9,13 @@ import Foundation
 import AVFoundation
 import UIKit
 
-class CameraModel: NSObject, ObservableObject {
+class CameraModel: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
     @Published var session = AVCaptureSession()
     @Published var alert = false
     @Published var isTaken = false
     @Published var photoData: Data?
-
+    var output = AVCapturePhotoOutput()
+    
     func Check() {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
@@ -56,15 +57,14 @@ class CameraModel: NSObject, ObservableObject {
                 self.session.addInput(input)
             }
 
-            let output = AVCapturePhotoOutput()
-            if self.session.canAddOutput(output) {
-                self.session.addOutput(output)
+            if self.session.canAddOutput(self.output) {
+                self.session.addOutput(self.output)
             }
-
+            
             self.session.commitConfiguration()
             
             DispatchQueue.global(qos: .background).async {
-                self.session.startRunning()  // 세션 시작
+                self.session.startRunning()
             }
             
         } catch {
@@ -73,6 +73,26 @@ class CameraModel: NSObject, ObservableObject {
     }
 
     func takePicture() {
-        // 사진 촬영 로직 추가 가능
+        let settings = AVCapturePhotoSettings()
+        settings.flashMode = .auto
+        
+        self.output.capturePhoto(with: settings, delegate: self)
+    }
+    
+    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+        if let error = error {
+            print("사진 처리 중 오류 발생: \(error.localizedDescription)")
+            return
+        }
+
+        guard let imageData = photo.fileDataRepresentation() else {
+            print("이미지 데이터를 가져올 수 없습니다.")
+            return
+        }
+
+        DispatchQueue.main.async {
+            self.photoData = imageData
+            self.isTaken = true  // 사진이 촬영되었음을 표시
+        }
     }
 }
